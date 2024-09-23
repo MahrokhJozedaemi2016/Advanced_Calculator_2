@@ -1,48 +1,47 @@
+"""
+This module contains tests for the Calculations class.
+"""
 from decimal import Decimal
-import pytest
+from calculator.operations import add
 from calculator.calculation import Calculation
 from calculator.calculations import Calculations
-from calculator.operations import MathOperations
-
-@pytest.fixture
-def setup_sample_data():
-    """Fixture to set up calculations history for testing."""
-    Calculations.clear_history()  # Ensure history is cleared before tests
-    # Adding two sample calculations for testing purposes
-    Calculations.store_calculation(Calculation(Decimal('10'), Decimal('5'), MathOperations.add))
-    Calculations.store_calculation(Calculation(Decimal('20'), Decimal('3'), MathOperations.subtract))
 
 def test_store_calculation(setup_sample_data):
-    """Test that a calculation is correctly stored in history."""
-    new_calc = Calculation(Decimal('2'), Decimal('2'), MathOperations.add)
-    Calculations.store_calculation(new_calc)
-    assert Calculations.latest_calculation() == new_calc, "Latest calculation mismatch"
+    """Test storing a calculation in history."""
+    calc = Calculation(Decimal('2'), Decimal('2'), add)
+    Calculations.store_calculation(calc)
+    assert Calculations.get_latest() == calc, "Failed to store the calculation."
 
 def test_history_length(setup_sample_data):
-    """Verify that history contains the correct number of entries."""
-    history = Calculations.get_history()
-    assert len(history) == 2, "History length mismatch"
+    """Test that history has the correct number of entries."""
+    assert len(Calculations.get_history()) == 4, "History does not contain the expected number of calculations."
 
 def test_clear_history(setup_sample_data):
-    """Test clearing the history of calculations."""
+    """Test clearing the entire calculation history."""
     Calculations.clear_history()
-    assert len(Calculations.get_history()) == 0, "History was not cleared"
+    assert len(Calculations.get_history()) == 0, "History was not cleared."
 
 def test_latest_calculation(setup_sample_data):
-    """Test fetching the latest calculation from history."""
-    latest = Calculations.latest_calculation()
-    assert latest.operand1 == Decimal('20') and latest.operand2 == Decimal('3'), "Latest calculation is incorrect"
+    """Test getting the latest calculation."""
+    assert Calculations.get_latest().a == Decimal('40') and Calculations.get_latest().b == Decimal('5'), \
+        "Did not get the correct latest calculation."
 
 def test_find_calculations_by_operation(setup_sample_data):
-    """Test finding calculations by their operation."""
-    adds = Calculations.find_by_operation("add")
-    assert len(adds) == 1, "Add operations not found"
-    
-    subtracts = Calculations.find_by_operation("subtract")
-    assert len(subtracts) == 1, "Subtract operations not found"
+    """Test finding calculations by operation."""
+    add_operations = Calculations.find_by_operation("add")
+    assert len(add_operations) == 1, "Did not find the correct number of calculations with add operation."
 
-def test_latest_when_empty():
-    """Ensure None is returned when history is empty."""
+def test_multiply_and_divide_operations(setup_sample_data):
+    """Test multiplication and division operations in history."""
+    assert len(Calculations.find_by_operation("multiply")) == 1, "Did not find the correct number of multiply operations."
+    assert len(Calculations.find_by_operation("divide")) == 1, "Did not find the correct number of divide operations."
+
+def test_get_latest_with_empty_history():
+    """Test getting the latest calculation when the history is empty."""
     Calculations.clear_history()
-    assert Calculations.latest_calculation() is None, "Latest calculation should be None for empty history"
+    assert Calculations.get_latest() is None, "Expected None for latest calculation with empty history."
 
+def test_get_full_history(setup_sample_data):
+    """Test retrieving the entire history of calculations."""
+    history = Calculations.get_history()
+    assert len(history) == 4, "The full history was not retrieved correctly."

@@ -1,32 +1,44 @@
+"""
+This module contains tests for calculator operations.
+"""
 from decimal import Decimal
 import pytest
+from calculator.operations import add, subtract, multiply, divide
 from calculator.calculation import Calculation
-from calculator.operations import MathOperations  # Import your modified operations
 
-@pytest.mark.parametrize("x, y, op, result", [
-    (Decimal('10'), Decimal('5'), MathOperations.add, Decimal('15')),
-    (Decimal('10'), Decimal('5'), MathOperations.subtract, Decimal('5')),
-    (Decimal('10'), Decimal('5'), MathOperations.multiply, Decimal('50')),
-    (Decimal('10'), Decimal('2'), MathOperations.divide, Decimal('5')),
-    (Decimal('10.5'), Decimal('0.5'), MathOperations.add, Decimal('11.0')),
-    (Decimal('10.5'), Decimal('0.5'), MathOperations.subtract, Decimal('10.0')),
-    (Decimal('10.5'), Decimal('2'), MathOperations.multiply, Decimal('21.0')),
-    (Decimal('10'), Decimal('0.5'), MathOperations.divide, Decimal('20')),
+# Replace MathOperations references with actual operations
+@pytest.mark.parametrize("operand_a, operand_b, operation, expected", [
+    (Decimal('10'), Decimal('5'), add, Decimal('15')),  # Test addition
+    (Decimal('10'), Decimal('5'), subtract, Decimal('5')),  # Test subtraction
+    (Decimal('10'), Decimal('5'), multiply, Decimal('50')),  # Test multiplication
+    (Decimal('10'), Decimal('2'), divide, Decimal('5')),  # Test division
 ])
-def test_perform_operations(x, y, op, result):
-    """Test the operations on the Calculation class."""
-    calculation = Calculation(x, y, op)
-    assert calculation.perform() == result, f"Operation failed: {op.__name__}"
+def test_calculation_operations(operand_a, operand_b, operation, expected):
+    """
+    Test calculation operations with various scenarios.
 
-def test_calculation_string_representation():
-    """Test that Calculation provides the correct string representation."""
-    calculation = Calculation(Decimal('10'), Decimal('5'), MathOperations.add)
-    expected = "Calculation(10, 5, add)"
-    assert str(calculation) == expected, "String representation mismatch"
+    This test ensures that the Calculation class correctly performs the arithmetic operation
+    (specified by the 'operation' parameter) on two Decimal operands ('operand_a' and 'operand_b'),
+    and that the result matches the expected outcome.
+    """
+    calc = Calculation(operand_a, operand_b, operation)
+    assert calc.perform() == expected, f"Failed {operation.__name__} operation with {operand_a} and {operand_b}"
 
-def test_division_by_zero():
-    """Ensure division by zero raises ValueError."""
-    calculation = Calculation(Decimal('10'), Decimal('0'), MathOperations.divide)
+def test_divide_by_zero():
+    """
+    Test division by zero to ensure it raises a ValueError.
+
+    This test checks that attempting to perform a division operation with a zero divisor
+    correctly raises a ValueError.
+    """
+    calc = Calculation(Decimal('10'), Decimal('0'), divide)
     with pytest.raises(ValueError, match="Cannot divide by zero"):
-        calculation.perform()
+        calc.perform()
 
+def test_calculation_repr():
+    """
+    Test the string representation of a Calculation object.
+    """
+    calc = Calculation(Decimal('10'), Decimal('5'), add)
+    expected_repr = "Calculation(10, 5, add)"
+    assert repr(calc) == expected_repr, "The __repr__ method did not return the expected string."

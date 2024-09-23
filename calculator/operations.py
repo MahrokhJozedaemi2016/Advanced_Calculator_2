@@ -1,27 +1,19 @@
 from decimal import Decimal
 
-class MathOperations:
-    """Contains static methods for basic arithmetic operations."""
+def add(a: Decimal, b: Decimal) -> Decimal:
+    """Perform addition."""
+    return a + b
 
-    @staticmethod
-    def add(a: Decimal, b: Decimal) -> Decimal:
-        """Add two numbers."""
-        return a + b
+def subtract(a: Decimal, b: Decimal) -> Decimal:
+    """Perform subtraction."""
+    return a - b
 
-    @staticmethod
-    def subtract(a: Decimal, b: Decimal) -> Decimal:
-        """Subtract second number from the first."""
-        return a - b
+def multiply(a: Decimal, b: Decimal) -> Decimal:
+    """Perform multiplication."""
+    return a * b
 
-    @staticmethod
-    def multiply(a: Decimal, b: Decimal) -> Decimal:
-        """Multiply two numbers."""
-        return a * b
-
-    @staticmethod
-    def divide(a: Decimal, b: Decimal) -> Decimal:
-        """Divide first number by the second. Raise an error if dividing by zero."""
-        if b == 0:
-            raise ValueError("Cannot divide by zero")
-        return a / b
-
+def divide(a: Decimal, b: Decimal) -> Decimal:
+    """Perform division, with error handling for division by zero."""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b

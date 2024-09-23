@@ -1,5 +1,9 @@
-from decimal import Decimal
-from calculator.calculator import MyCalculator
+"""
+This module contains tests for calculator operations.
+"""
+from decimal import Decimal  # Standard library import
+import pytest  # Third-party import
+from calculator import MyCalculator  # First-party import
 
 def test_addition():
     """Test addition using MyCalculator."""
@@ -19,9 +23,18 @@ def test_division():
 
 def test_divide_by_zero():
     """Ensure MyCalculator raises an error for divide by zero."""
-    try:
+    with pytest.raises(ValueError, match="Cannot divide by zero"):
         MyCalculator.divide(Decimal(10), Decimal(0))
-        assert False, "Expected ValueError for division by zero"
-    except ValueError as e:
-        assert str(e) == "Cannot divide by zero", "Incorrect error message for division by zero"
 
+def test_division_by_one():
+    """Test division by one using MyCalculator."""
+    assert MyCalculator.divide(Decimal(10), Decimal(1)) == Decimal(10), "Division by one failed"
+
+def test_negative_multiplication():
+    """Test multiplication with a negative number using MyCalculator."""
+    assert MyCalculator.multiply(Decimal(-3), Decimal(3)) == Decimal(-9), "Multiplication with negative number failed"
+
+def test_non_decimal_inputs():
+    """Ensure MyCalculator raises TypeError for non-decimal inputs."""
+    with pytest.raises(TypeError):
+        MyCalculator.add(2, 2)  # Passing integers instead of Decimal
